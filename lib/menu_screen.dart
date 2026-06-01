@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'dont_get_blown_up_game.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -70,6 +71,9 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _buildGameOverOverlay(BuildContext context, DontGetBlownUpGame game) {
+    // Ambil score sekarang dan simpan — supaya tidak berubah saat widget rebuild
+    final finalScore = game.score;
+
     return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
@@ -78,43 +82,43 @@ class MenuScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Colors.orangeAccent, width: 1.5),
           boxShadow: const [
-            BoxShadow(color: Colors.deepOrange, blurRadius: 20, spreadRadius: 1),
+            BoxShadow(
+              color: Colors.deepOrange,
+              blurRadius: 20,
+              spreadRadius: 1,
+            ),
           ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Gambar game_over.png
             Image.asset(
-              'assets/images/logo_game.png',
-              width: 140,
+              'assets/images/game_over.png',
+              width: 220,
               fit: BoxFit.contain,
             ),
-            const SizedBox(height: 4),
-            const Text(
-              'GAME OVER',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 3,
-                shadows: [Shadow(color: Colors.redAccent, blurRadius: 10)],
-              ),
-            ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 10),
             Text(
-              'Score: \${game.score}',
+              'Score: $finalScore',
               style: const TextStyle(
                 color: Colors.orangeAccent,
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(color: Colors.black, blurRadius: 4),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 18),
             GestureDetector(
-              onTap: () => game.resetGame(),
+              onTap: () {
+                FlameAudio.bgm.stop();
+                game.resetGame();
+              },
               child: Image.asset(
                 'assets/images/button_playagain.png',
-                width: 140,
+                width: 150,
                 fit: BoxFit.contain,
               ),
             ),

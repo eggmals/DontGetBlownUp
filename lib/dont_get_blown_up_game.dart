@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flutter/material.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'background_component.dart';
 import 'plane_component.dart';
 import 'rocket_component.dart';
@@ -42,15 +42,20 @@ class DontGetBlownUpGame extends FlameGame
     rocketSprite3   = await loadSprite('rocket3.png');
     explosionSprite = await loadSprite('explossion.png');
 
+    // Posisi pesawat lebih ke tengah-kiri layar
     plane = PlaneComponent()
       ..sprite = await loadSprite('jet.png')
-      ..size = Vector2(120, 70)
-      ..position = Vector2(120, size.y / 2)
+      ..size = Vector2(130, 75)
+      ..position = Vector2(size.x * 0.18, size.y * 0.55)
       ..anchor = Anchor.center;
     add(plane);
 
     hud = HudComponent();
     add(hud);
+
+    // Mulai BGM loop
+    await FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
   }
 
   @override
@@ -124,6 +129,9 @@ class DontGetBlownUpGame extends FlameGame
       ..anchor = Anchor.center;
 
     add(rocket);
+
+    // Suara roket launcher setiap spawn
+    FlameAudio.play('roket.mp3', volume: 0.4);
   }
 
   void onHit(Vector2 hitPosition) {
@@ -133,6 +141,9 @@ class DontGetBlownUpGame extends FlameGame
     isInvincible = true;
     plane.setFlashing(true);
     hud.updateLives(lives);
+
+    // Suara ledakan
+    FlameAudio.play('meledak.mp3', volume: 0.8);
 
     final explosion = ExplosionComponent(sprite: explosionSprite)
       ..position = hitPosition
@@ -145,6 +156,7 @@ class DontGetBlownUpGame extends FlameGame
   }
 
   void _gameOver() {
+    FlameAudio.bgm.stop();
     pauseEngine();
     overlays.add('GameOver');
   }
@@ -161,7 +173,7 @@ class DontGetBlownUpGame extends FlameGame
     children.whereType<RocketComponent>().forEach((r) => r.removeFromParent());
     children.whereType<ExplosionComponent>().forEach((e) => e.removeFromParent());
 
-    plane.position = Vector2(120, size.y / 2);
+    plane.position = Vector2(size.x * 0.18, size.y * 0.55);
     plane.setFlashing(false);
 
     hud.updateLives(3);
@@ -169,18 +181,19 @@ class DontGetBlownUpGame extends FlameGame
 
     overlays.remove('GameOver');
     resumeEngine();
+
+    // Restart BGM
+    FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
     plane.position.y += event.localDelta.y;
 
-    // Batas atas & bawah
     final halfH = plane.size.y / 2;
     if (plane.position.y < halfH) plane.position.y = halfH;
     if (plane.position.y > size.y - halfH) plane.position.y = size.y - halfH;
 
-    // Batas kiri & kanan — pesawat tidak bisa keluar layar horizontal
     final halfW = plane.size.x / 2;
     if (plane.position.x < halfW) plane.position.x = halfW;
     if (plane.position.x > size.x - halfW) plane.position.x = size.x - halfW;
