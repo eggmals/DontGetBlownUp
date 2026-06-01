@@ -175,8 +175,14 @@ class DontGetBlownUpGame extends FlameGame
   void onDragUpdate(DragUpdateEvent event) {
     plane.position.y += event.localDelta.y;
 
+    // Batas atas & bawah
     final halfH = plane.size.y / 2;
     if (plane.position.y < halfH) plane.position.y = halfH;
     if (plane.position.y > size.y - halfH) plane.position.y = size.y - halfH;
+
+    // Batas kiri & kanan — pesawat tidak bisa keluar layar horizontal
+    final halfW = plane.size.x / 2;
+    if (plane.position.x < halfW) plane.position.x = halfW;
+    if (plane.position.x > size.x - halfW) plane.position.x = size.x - halfW;
   }
 }

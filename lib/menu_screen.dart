@@ -72,13 +72,13 @@ class MenuScreen extends StatelessWidget {
   Widget _buildGameOverOverlay(BuildContext context, DontGetBlownUpGame game) {
     return Center(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
         decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.88),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.orangeAccent, width: 2),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.orangeAccent, width: 1.5),
           boxShadow: const [
-            BoxShadow(color: Colors.deepOrange, blurRadius: 30, spreadRadius: 2),
+            BoxShadow(color: Colors.deepOrange, blurRadius: 20, spreadRadius: 1),
           ],
         ),
         child: Column(
@@ -86,44 +86,36 @@ class MenuScreen extends StatelessWidget {
           children: [
             Image.asset(
               'assets/images/logo_game.png',
-              width: 200,
+              width: 140,
               fit: BoxFit.contain,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             const Text(
               'GAME OVER',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 48,
+                fontSize: 30,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 4,
-                shadows: [Shadow(color: Colors.redAccent, blurRadius: 15)],
+                letterSpacing: 3,
+                shadows: [Shadow(color: Colors.redAccent, blurRadius: 10)],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
             Text(
-              'Score: ${game.score}',
+              'Score: \${game.score}',
               style: const TextStyle(
                 color: Colors.orangeAccent,
-                fontSize: 28,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 16),
             GestureDetector(
               onTap: () => game.resetGame(),
               child: Image.asset(
                 'assets/images/button_playagain.png',
-                width: 200,
+                width: 140,
                 fit: BoxFit.contain,
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Main Menu',
-                style: TextStyle(color: Colors.white60, fontSize: 15),
               ),
             ),
           ],
