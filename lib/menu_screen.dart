@@ -53,7 +53,9 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
+  // Fungsi dijadikan async untuk memicu BGM
   void _startGame(BuildContext context) async {
+    // Inisialisasi dan jalankan BGM setelah ada interaksi (taps)
     await FlameAudio.bgm.initialize();
     FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
 
@@ -74,6 +76,7 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _buildGameOverOverlay(BuildContext context, DontGetBlownUpGame game) {
+    // Ambil score sekarang dan simpan — supaya tidak berubah saat widget rebuild
     final finalScore = game.score;
 
     return Center(
@@ -94,6 +97,7 @@ class MenuScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Gambar game_over.png
             Image.asset(
               'assets/images/game_over.png',
               width: 220,
