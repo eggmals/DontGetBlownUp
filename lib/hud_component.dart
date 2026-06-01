@@ -6,8 +6,6 @@ class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
   late TextComponent _scoreNumber;
   final List<SpriteComponent> _hearts = [];
 
-  // text_health & text_score: ukuran asli 1667×834 → rasio 2:1
-  // Diperbesar dari sebelumnya (50→65)
   static const double _labelH = 65.0;
   static const double _labelW = 130.0;
 
@@ -17,14 +15,12 @@ class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
 
     final heartSprite = await gameRef.loadSprite('health_fuel.png');
 
-    // Label "HEALTH"
     final healthLabel = SpriteComponent()
       ..sprite = await gameRef.loadSprite('text_health.png')
       ..size = Vector2(_labelW, _labelH)
       ..position = Vector2(12, 8);
     gameRef.add(healthLabel);
 
-    // Ikon hati × 3 — diperbesar
     for (int i = 0; i < 3; i++) {
       final heart = SpriteComponent()
         ..sprite = heartSprite
@@ -34,14 +30,12 @@ class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
       gameRef.add(heart);
     }
 
-    // Label "SCORE"
     final scoreLabel = SpriteComponent()
       ..sprite = await gameRef.loadSprite('text_score.png')
       ..size = Vector2(_labelW, _labelH)
       ..position = Vector2(gameRef.size.x - _labelW - 12, 8);
     gameRef.add(scoreLabel);
 
-    // Angka skor — diperbesar
     _scoreNumber = TextComponent(
       text: '0',
       position: Vector2(gameRef.size.x - (_labelW / 2) - 12, 78),

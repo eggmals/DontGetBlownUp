@@ -53,7 +53,10 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  void _startGame(BuildContext context) {
+  void _startGame(BuildContext context) async {
+    await FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
+
     final game = DontGetBlownUpGame();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -71,7 +74,6 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _buildGameOverOverlay(BuildContext context, DontGetBlownUpGame game) {
-    // Ambil score sekarang dan simpan — supaya tidak berubah saat widget rebuild
     final finalScore = game.score;
 
     return Center(
@@ -92,7 +94,6 @@ class MenuScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Gambar game_over.png
             Image.asset(
               'assets/images/game_over.png',
               width: 220,

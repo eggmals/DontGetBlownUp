@@ -42,7 +42,6 @@ class DontGetBlownUpGame extends FlameGame
     rocketSprite3   = await loadSprite('rocket3.png');
     explosionSprite = await loadSprite('explossion.png');
 
-    // Posisi pesawat lebih ke tengah-kiri layar
     plane = PlaneComponent()
       ..sprite = await loadSprite('jet.png')
       ..size = Vector2(130, 75)
@@ -53,9 +52,6 @@ class DontGetBlownUpGame extends FlameGame
     hud = HudComponent();
     add(hud);
 
-    // Mulai BGM loop
-    await FlameAudio.bgm.initialize();
-    FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
   }
 
   @override
@@ -130,7 +126,6 @@ class DontGetBlownUpGame extends FlameGame
 
     add(rocket);
 
-    // Suara roket launcher setiap spawn
     FlameAudio.play('roket.mp3', volume: 0.4);
   }
 
@@ -142,7 +137,6 @@ class DontGetBlownUpGame extends FlameGame
     plane.setFlashing(true);
     hud.updateLives(lives);
 
-    // Suara ledakan
     FlameAudio.play('meledak.mp3', volume: 0.8);
 
     final explosion = ExplosionComponent(sprite: explosionSprite)
@@ -182,7 +176,6 @@ class DontGetBlownUpGame extends FlameGame
     overlays.remove('GameOver');
     resumeEngine();
 
-    // Restart BGM
     FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
   }
 
