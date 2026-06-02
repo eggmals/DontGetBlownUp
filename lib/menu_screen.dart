@@ -54,6 +54,7 @@ class MenuScreen extends StatelessWidget {
 
   void _startGame(BuildContext context) {
     final game = DontGetBlownUpGame();
+
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => Scaffold(
@@ -67,6 +68,10 @@ class MenuScreen extends StatelessWidget {
         ),
       ),
     );
+
+    Future.delayed(const Duration(milliseconds: 400), () {
+      game.startAudio();
+    });
   }
 
   Widget _buildGameOverOverlay(BuildContext context, DontGetBlownUpGame game) {
@@ -78,14 +83,12 @@ class MenuScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Game Over image
             Image.asset(
               'assets/images/game_over.png',
               width: 380,
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 16),
-            // Tombol Play Again
             GestureDetector(
               onTap: () => game.resetGame(),
               child: Image.asset(
@@ -95,7 +98,6 @@ class MenuScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            // Score
             Text(
               'Score: $finalScore',
               style: const TextStyle(
@@ -103,7 +105,11 @@ class MenuScreen extends StatelessWidget {
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 shadows: [
-                  Shadow(color: Colors.black, blurRadius: 6, offset: Offset(2, 2)),
+                  Shadow(
+                    color: Colors.black,
+                    blurRadius: 6,
+                    offset: Offset(2, 2),
+                  ),
                 ],
               ),
             ),
