@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flame/game.dart';
-import 'dont_get_blown_up_game.dart';
 import 'menu_screen.dart';
 
 void main() async {
@@ -24,7 +22,6 @@ class DontGetBlownUpApp extends StatelessWidget {
       title: "Don't Get Blown Up",
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      
       home: const MenuScreen(),
     );
   }

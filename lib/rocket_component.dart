@@ -2,8 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/collisions.dart';
 import 'dont_get_blown_up_game.dart';
 
+// Tipe roket:
+// 1 — Kecil & cepat  : lurus
+// 2 — Medium         : zigzag vertikal kecil
+// 3 — Besar & lambat : gelombang vertikal besar
 class RocketComponent extends SpriteComponent
-    with CollisionCallbacks, HasGameRef<DontGetBlownUpGame> {
+    with CollisionCallbacks, HasGameReference<DontGetBlownUpGame> {
   final int rocketType;
   final double speed;
 
@@ -46,12 +50,13 @@ class RocketComponent extends SpriteComponent
       _waveTimer += dt;
       final dir = (_waveTimer % 2 < 1) ? 1 : -1;
       position.y += _waveAmplitude * _waveFrequency * dt *
-          (rocketType == 2 ? 0.8 : 0.5) * dir;
+          (rocketType == 2 ? 0.8 : 0.5) *
+          dir;
 
       final halfH = size.y / 2;
       if (position.y < halfH) position.y = halfH;
-      if (position.y > gameRef.size.y - halfH) {
-        position.y = gameRef.size.y - halfH;
+      if (position.y > game.size.y - halfH) {
+        position.y = game.size.y - halfH;
       }
     }
 

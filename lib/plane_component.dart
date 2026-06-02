@@ -4,7 +4,7 @@ import 'dont_get_blown_up_game.dart';
 import 'rocket_component.dart';
 
 class PlaneComponent extends SpriteComponent
-    with CollisionCallbacks, HasGameRef<DontGetBlownUpGame> {
+    with CollisionCallbacks, HasGameReference<DontGetBlownUpGame> {
 
   bool _flashing = false;
   double _flashTimer = 0;
@@ -46,14 +46,15 @@ class PlaneComponent extends SpriteComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
 
-    if (other is RocketComponent && !gameRef.isInvincible) {
+    if (other is RocketComponent && !game.isInvincible) {
       final hitPos = intersectionPoints.fold(
-        Vector2.zero(),
-        (acc, p) => acc + p,
-      ) / intersectionPoints.length.toDouble();
+            Vector2.zero(),
+            (acc, p) => acc + p,
+          ) /
+          intersectionPoints.length.toDouble();
 
       other.removeFromParent();
-      gameRef.onHit(hitPos);
+      game.onHit(hitPos);
     }
   }
 }

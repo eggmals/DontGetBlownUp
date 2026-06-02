@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   flame: ^1.18.0
-  flame_audio: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +35,3 @@ flutter:
     - assets/images/rocket3.png
     - assets/images/text_health.png
     - assets/images/text_score.png
-    - assets/audio/bgm.mp3
-    - assets/audio/meledak.mp3
-    - assets/audio/roket.mp3

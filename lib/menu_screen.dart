@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'dont_get_blown_up_game.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -17,7 +16,7 @@ class MenuScreen extends StatelessWidget {
           ),
         ),
         child: Container(
-          color: Colors.black.withOpacity(0.45),
+          color: Colors.black.withValues(alpha: 0.45),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -53,12 +52,7 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  // Fungsi dijadikan async untuk memicu BGM
-  void _startGame(BuildContext context) async {
-    // Inisialisasi dan jalankan BGM setelah ada interaksi (taps)
-    await FlameAudio.bgm.initialize();
-    FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
-
+  void _startGame(BuildContext context) {
     final game = DontGetBlownUpGame();
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -76,55 +70,41 @@ class MenuScreen extends StatelessWidget {
   }
 
   Widget _buildGameOverOverlay(BuildContext context, DontGetBlownUpGame game) {
-    // Ambil score sekarang dan simpan — supaya tidak berubah saat widget rebuild
     final finalScore = game.score;
-
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.88),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.orangeAccent, width: 1.5),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.deepOrange,
-              blurRadius: 20,
-              spreadRadius: 1,
-            ),
-          ],
-        ),
+    return Container(
+      color: Colors.black.withValues(alpha: 0.75),
+      child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Gambar game_over.png
+            // Game Over image
             Image.asset(
               'assets/images/game_over.png',
-              width: 220,
+              width: 380,
               fit: BoxFit.contain,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
+            // Tombol Play Again
+            GestureDetector(
+              onTap: () => game.resetGame(),
+              child: Image.asset(
+                'assets/images/button_playagain.png',
+                width: 180,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Score
             Text(
               'Score: $finalScore',
               style: const TextStyle(
-                color: Colors.orangeAccent,
-                fontSize: 22,
+                color: Color(0xFFFF8C00),
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
                 shadows: [
-                  Shadow(color: Colors.black, blurRadius: 4),
+                  Shadow(color: Colors.black, blurRadius: 6, offset: Offset(2, 2)),
                 ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            GestureDetector(
-              onTap: () {
-                FlameAudio.bgm.stop();
-                game.resetGame();
-              },
-              child: Image.asset(
-                'assets/images/button_playagain.png',
-                width: 150,
-                fit: BoxFit.contain,
               ),
             ),
           ],

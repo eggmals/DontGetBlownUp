@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'background_component.dart';
 import 'plane_component.dart';
 import 'rocket_component.dart';
@@ -11,6 +10,7 @@ import 'explosion_component.dart';
 
 class DontGetBlownUpGame extends FlameGame
     with DragCallbacks, HasCollisionDetection {
+
   int lives = 3;
   int score = 0;
   bool isInvincible = false;
@@ -35,51 +35,79 @@ class DontGetBlownUpGame extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // Memuat (preload) efek suara agar tidak menyebabkan crash/stutter di web
-    await FlameAudio.audioCache.loadAll([
-      'roket.mp3',
-      'meledak.mp3',
-    ]);
-
+    // Background scrolling
     add(BackgroundComponent());
 
+    // Load sprites
     rocketSprite1   = await loadSprite('rocket1.png');
     rocketSprite2   = await loadSprite('rocket2.png');
     rocketSprite3   = await loadSprite('rocket3.png');
     explosionSprite = await loadSprite('explossion.png');
 
-    // Posisi pesawat lebih ke tengah-kiri layar
+    // Pesawat pemain
     plane = PlaneComponent()
       ..sprite = await loadSprite('jet.png')
       ..size = Vector2(130, 75)
-      ..position = Vector2(size.x * 0.18, size.y * 0.55)
+      ..position = Vector2(size.x * 0.06, size.y * 0.55)
       ..anchor = Anchor.center;
     add(plane);
 
+    // HUD
     hud = HudComponent();
     add(hud);
+  }
 
-    // Pemanggilan BGM di sini telah dipindahkan ke menu_screen.dart
+  @override
+  void onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
+  }
+
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    plane.position.y += event.localDelta.y;
+
+    // Batas atas & bawah
+    final halfH = plane.size.y / 2;
+    if (plane.position.y < halfH) plane.position.y = halfH;
+    if (plane.position.y > size.y - halfH) plane.position.y = size.y - halfH;
+
+    // Batas kiri & kanan
+    final halfW = plane.size.x / 2;
+    if (plane.position.x < halfW) plane.position.x = halfW;
+    if (plane.position.x > size.x - halfW) plane.position.x = size.x - halfW;
   }
 
   @override
   void update(double dt) {
     super.update(dt);
 
+    // Skor naik per detik
     _scoreTimer += dt;
     if (_scoreTimer >= 1.0) {
       _scoreTimer = 0;
       score += 1;
       hud.updateScore(score);
+      // Makin tinggi skor, makin sering spawn
       _spawnInterval = max(_minSpawnInterval, 2.0 - (score * 0.02));
     }
 
+    // Spawn roket
     _spawnTimer += dt;
     if (_spawnTimer >= _spawnInterval) {
       _spawnTimer = 0;
       _spawnRocket();
     }
 
+    // Hitung mundur game over pending
+    if (_gameOverPending) {
+      _gameOverTimer += dt;
+      if (_gameOverTimer >= _gameOverDelay) {
+        _gameOverPending = false;
+        _gameOver();
+      }
+    }
+
+    // Hitung mundur invincible
     if (isInvincible) {
       _invincibleTimer += dt;
       if (_invincibleTimer >= 1.5) {
@@ -91,6 +119,7 @@ class DontGetBlownUpGame extends FlameGame
   }
 
   void _spawnRocket() {
+    // Bobot spawn: tipe1 50%, tipe2 35%, tipe3 15%
     final roll = _random.nextDouble();
     int rocketType;
     if (roll < 0.50) {
@@ -131,36 +160,42 @@ class DontGetBlownUpGame extends FlameGame
       ..size = rocketSize
       ..position = Vector2(size.x + rocketSize.x, spawnY)
       ..anchor = Anchor.center;
-
     add(rocket);
-
-    // Suara roket launcher setiap spawn
-    FlameAudio.play('roket.mp3', volume: 0.4);
   }
 
+  bool _gameOverPending = false;
+  double _gameOverTimer = 0;
+  static const double _gameOverDelay = 0.9;
+
+  // Dipanggil PlaneComponent saat tabrakan
   void onHit(Vector2 hitPosition) {
     if (isInvincible) return;
 
     lives--;
-    isInvincible = true;
-    plane.setFlashing(true);
     hud.updateLives(lives);
 
-    // Suara ledakan
-    FlameAudio.play('meledak.mp3', volume: 0.8);
-
-    final explosion = ExplosionComponent(sprite: explosionSprite)
-      ..position = hitPosition
-      ..anchor = Anchor.center;
-    add(explosion);
-
     if (lives <= 0) {
-      _gameOver();
+      // Ledakan besar & sembunyikan pesawat, lalu delay game over
+      plane.opacity = 0;
+      final bigExplosion = ExplosionComponent(sprite: explosionSprite, big: true)
+        ..position = plane.position.clone()
+        ..anchor = Anchor.center;
+      add(bigExplosion);
+      _gameOverPending = true;
+      _gameOverTimer = 0;
+    } else {
+      isInvincible = true;
+      plane.setFlashing(true);
+
+      // Efek ledakan kecil
+      final explosion = ExplosionComponent(sprite: explosionSprite)
+        ..position = hitPosition
+        ..anchor = Anchor.center;
+      add(explosion);
     }
   }
 
   void _gameOver() {
-    FlameAudio.bgm.stop();
     pauseEngine();
     overlays.add('GameOver');
   }
@@ -173,33 +208,23 @@ class DontGetBlownUpGame extends FlameGame
     _spawnTimer = 0;
     _spawnInterval = 2.0;
     _scoreTimer = 0;
+    _gameOverPending = false;
+    _gameOverTimer = 0;
 
+    // Bersihkan roket & ledakan
     children.whereType<RocketComponent>().forEach((r) => r.removeFromParent());
     children.whereType<ExplosionComponent>().forEach((e) => e.removeFromParent());
 
-    plane.position = Vector2(size.x * 0.18, size.y * 0.55);
+    // Reset pesawat
+    plane.position = Vector2(size.x * 0.06, size.y * 0.55);
     plane.setFlashing(false);
+    plane.opacity = 1.0;
 
+    // Reset HUD
     hud.updateLives(3);
     hud.updateScore(0);
 
     overlays.remove('GameOver');
     resumeEngine();
-
-    // Restart BGM
-    FlameAudio.bgm.play('bgm.mp3', volume: 0.5);
-  }
-
-  @override
-  void onDragUpdate(DragUpdateEvent event) {
-    plane.position.y += event.localDelta.y;
-
-    final halfH = plane.size.y / 2;
-    if (plane.position.y < halfH) plane.position.y = halfH;
-    if (plane.position.y > size.y - halfH) plane.position.y = size.y - halfH;
-
-    final halfW = plane.size.x / 2;
-    if (plane.position.x < halfW) plane.position.x = halfW;
-    if (plane.position.x > size.x - halfW) plane.position.x = size.x - halfW;
   }
 }

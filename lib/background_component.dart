@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'dont_get_blown_up_game.dart';
 
 class BackgroundComponent extends Component
-    with HasGameRef<DontGetBlownUpGame> {
+    with HasGameReference<DontGetBlownUpGame> {
   late SpriteComponent _bg1;
   late SpriteComponent _bg2;
   final double _scrollSpeed = 180;
@@ -11,8 +11,8 @@ class BackgroundComponent extends Component
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final sprite = await gameRef.loadSprite('background.jpg');
-    final bgSize = Vector2(gameRef.size.x, gameRef.size.y);
+    final sprite = await game.loadSprite('background.jpg');
+    final bgSize = Vector2(game.size.x, game.size.y);
 
     _bg1 = SpriteComponent()
       ..sprite = sprite
@@ -24,8 +24,8 @@ class BackgroundComponent extends Component
       ..size = bgSize
       ..position = Vector2(bgSize.x, 0);
 
-    gameRef.add(_bg1);
-    gameRef.add(_bg2);
+    game.add(_bg1);
+    game.add(_bg2);
   }
 
   @override

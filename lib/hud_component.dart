@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'dont_get_blown_up_game.dart';
 
-class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
+class HudComponent extends Component with HasGameReference<DontGetBlownUpGame> {
   late TextComponent _scoreNumber;
   final List<SpriteComponent> _hearts = [];
 
@@ -13,13 +13,13 @@ class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    final heartSprite = await gameRef.loadSprite('health_fuel.png');
+    final heartSprite = await game.loadSprite('health_fuel.png');
 
     final healthLabel = SpriteComponent()
-      ..sprite = await gameRef.loadSprite('text_health.png')
+      ..sprite = await game.loadSprite('text_health.png')
       ..size = Vector2(_labelW, _labelH)
       ..position = Vector2(12, 8);
-    gameRef.add(healthLabel);
+    game.add(healthLabel);
 
     for (int i = 0; i < 3; i++) {
       final heart = SpriteComponent()
@@ -27,18 +27,18 @@ class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
         ..size = Vector2(50, 50)
         ..position = Vector2(12 + i * 58.0, 78);
       _hearts.add(heart);
-      gameRef.add(heart);
+      game.add(heart);
     }
 
     final scoreLabel = SpriteComponent()
-      ..sprite = await gameRef.loadSprite('text_score.png')
+      ..sprite = await game.loadSprite('text_score.png')
       ..size = Vector2(_labelW, _labelH)
-      ..position = Vector2(gameRef.size.x - _labelW - 12, 8);
-    gameRef.add(scoreLabel);
+      ..position = Vector2(game.size.x - _labelW - 12, 8);
+    game.add(scoreLabel);
 
     _scoreNumber = TextComponent(
       text: '0',
-      position: Vector2(gameRef.size.x - (_labelW / 2) - 12, 78),
+      position: Vector2(game.size.x - (_labelW / 2) - 12, 78),
       anchor: Anchor.topCenter,
       textRenderer: TextPaint(
         style: const TextStyle(
@@ -51,7 +51,7 @@ class HudComponent extends Component with HasGameRef<DontGetBlownUpGame> {
         ),
       ),
     );
-    gameRef.add(_scoreNumber);
+    game.add(_scoreNumber);
   }
 
   void updateScore(int score) {
