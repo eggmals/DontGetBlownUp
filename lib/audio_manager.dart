@@ -13,9 +13,10 @@ class AudioManager {
 
   Future<void> init() async {
     _ctx = web.AudioContext();
-    _bufferBgm     = await _load('assets/audio/bgm.mp3');
-    _bufferRoket   = await _load('assets/audio/roket.mp3');
-    _bufferMeledak = await _load('assets/audio/meledak.mp3');
+    
+    _bufferBgm     = await _load('assets/assets/audio/bgm.mp3');
+    _bufferRoket   = await _load('assets/assets/audio/roket.mp3');
+    _bufferMeledak = await _load('assets/assets/audio/meledak.mp3');
   }
 
   Future<web.AudioBuffer?> _load(String url) async {

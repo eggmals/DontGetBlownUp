@@ -58416,13 +58416,13 @@ lv(){var s=0,r=A.J(t.H),q=this
 var $async$lv=A.K(function(a,b){if(a===1)return A.G(b,r)
 for(;;)switch(s){case 0:q.a=new v.G.AudioContext()
 s=2
-return A.D(q.ib("assets/audio/bgm.mp3"),$async$lv)
+return A.D(q.ib("assets/assets/audio/bgm.mp3"),$async$lv)
 case 2:q.b=b
 s=3
-return A.D(q.ib("assets/audio/roket.mp3"),$async$lv)
+return A.D(q.ib("assets/assets/audio/roket.mp3"),$async$lv)
 case 3:q.c=b
 s=4
-return A.D(q.ib("assets/audio/meledak.mp3"),$async$lv)
+return A.D(q.ib("assets/assets/audio/meledak.mp3"),$async$lv)
 case 4:q.d=b
 return A.H(null,r)}})
 return A.I($async$lv,r)},
