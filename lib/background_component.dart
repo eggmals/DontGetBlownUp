@@ -7,6 +7,8 @@ class BackgroundComponent extends Component
   late SpriteComponent _bg2;
   final double _scrollSpeed = 180;
 
+  BackgroundComponent() : super(priority: -1);
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -24,8 +26,8 @@ class BackgroundComponent extends Component
       ..size = bgSize
       ..position = Vector2(bgSize.x, 0);
 
-    game.add(_bg1);
-    game.add(_bg2);
+    add(_bg1);
+    add(_bg2);
   }
 
   @override

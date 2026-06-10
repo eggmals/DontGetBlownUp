@@ -9,6 +9,8 @@ class HudComponent extends Component with HasGameReference<DontGetBlownUpGame> {
   static const double _labelH = 65.0;
   static const double _labelW = 130.0;
 
+  HudComponent() : super(priority: 100);
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -19,7 +21,7 @@ class HudComponent extends Component with HasGameReference<DontGetBlownUpGame> {
       ..sprite = await game.loadSprite('text_health.png')
       ..size = Vector2(_labelW, _labelH)
       ..position = Vector2(12, 8);
-    game.add(healthLabel);
+    add(healthLabel);
 
     for (int i = 0; i < 3; i++) {
       final heart = SpriteComponent()
@@ -27,14 +29,14 @@ class HudComponent extends Component with HasGameReference<DontGetBlownUpGame> {
         ..size = Vector2(50, 50)
         ..position = Vector2(12 + i * 58.0, 78);
       _hearts.add(heart);
-      game.add(heart);
+      add(heart);
     }
 
     final scoreLabel = SpriteComponent()
       ..sprite = await game.loadSprite('text_score.png')
       ..size = Vector2(_labelW, _labelH)
       ..position = Vector2(game.size.x - _labelW - 12, 8);
-    game.add(scoreLabel);
+    add(scoreLabel);
 
     _scoreNumber = TextComponent(
       text: '0',
@@ -51,7 +53,7 @@ class HudComponent extends Component with HasGameReference<DontGetBlownUpGame> {
         ),
       ),
     );
-    game.add(_scoreNumber);
+    add(_scoreNumber);
   }
 
   void updateScore(int score) {

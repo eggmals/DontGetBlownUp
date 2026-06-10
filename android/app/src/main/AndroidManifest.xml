@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="uas_pemrogramanbergerak"
+        android:label="Dont Get Blown Up"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
